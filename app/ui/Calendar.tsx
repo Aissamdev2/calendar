@@ -2,7 +2,7 @@ import { Event } from "@/app/lib/definitions";
 import { cookies } from "next/headers";
 import CalendarClient from "@/app/ui/CalendarClient";
 async function getEvents() {
-  const response = await fetch('http://localhost:3000/api/events', {
+  const response = await fetch('htpps://calendar-delta-nine.vercel.app/api/events', {
     headers: {
       Cookie: cookies().toString()
     },
