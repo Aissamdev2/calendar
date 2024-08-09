@@ -11,7 +11,7 @@ export async function verifyJWT(token: string) {
     });
     return payload;
   } catch (error) {
-    throw new Error('Invalid token');
+    throw new Error(error.message);
   }
 }
 
