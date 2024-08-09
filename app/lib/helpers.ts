@@ -11,7 +11,8 @@ export async function verifyJWT(token: string) {
     });
     return payload;
   } catch (error) {
-    throw new Error(error.message);
+
+    throw error;
   }
 }
 
