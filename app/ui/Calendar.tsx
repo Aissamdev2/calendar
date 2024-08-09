@@ -1,19 +1,8 @@
 import { Event } from "@/app/lib/definitions";
 import { cookies } from "next/headers";
 import CalendarClient from "@/app/ui/CalendarClient";
-async function getEvents() {
-  const response = await fetch('htpps://calendar-delta-nine.vercel.app/api/events', {
-    headers: {
-      Cookie: cookies().toString()
-    },
-    next: { tags: ['calendar'] }
-  });
-  if (!response.ok) {
-    throw new Error('Failed to fetch events');
-  }
-  const events: Event[] = await response.json();
-  return events;
-}
+import { getEvents } from "@/app/lib/actions";
+
 
 export default async function Calendar() {
   const events = await getEvents();

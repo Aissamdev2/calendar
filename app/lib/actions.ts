@@ -3,6 +3,7 @@
 import { signIn } from '@/app/auth'
 import { cookies } from 'next/headers'
 import { revalidateTag } from "next/cache";
+import { Event } from "@/app/lib/definitions";
 
 export async function authenticate(_currentState: unknown, formData: FormData) {
   try {
@@ -43,4 +44,18 @@ export async function addEvent(_currentState: unknown, formData: FormData) {
     return 'Event created'
   }
   throw new Error('Failed to create event: ' + JSON.stringify(event))
+}
+
+export async function getEvents() {
+  const response = await fetch('https://calendar-delta-nine.vercel.app/api/events', {
+    headers: {
+      Cookie: cookies().toString()
+    },
+    next: { tags: ['calendar'] }
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch events');
+  }
+  const events: Event[] = await response.json();
+  return events;
 }
