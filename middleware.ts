@@ -4,7 +4,7 @@ import { verifyJWT, getSession } from './app/lib/helpers';
 export async function middleware(request: NextRequest) {
   const session = getSession()
 
-  if (!session && !request.nextUrl.pathname.startsWith('/login')) {
+  if (!session && (!request.nextUrl.pathname.startsWith('/login') && !request.nextUrl.pathname.startsWith('/register'))) {
     console.log('no session')
     return Response.redirect(new URL('/login', request.url))
   }
@@ -14,20 +14,16 @@ export async function middleware(request: NextRequest) {
       console.log('no token')
       return Response.redirect(new URL('/login', request.url))
     }
-    
-    try {
-      await verifyJWT(session.token);
-    } catch (error) {
-      console.log('bad token: ', error)
+    const payload = await verifyJWT(session.token);
+
+    if (!payload) {
       return Response.redirect(new URL('/login', request.url))
     }
-
-    request.headers.set('session', JSON.stringify(session))
     
     return Response.redirect(new URL('/gemif/calendar', request.url))
   }
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)', '/:path'],
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
 }

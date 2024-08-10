@@ -1,7 +1,6 @@
 import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { UserCookie } from './definitions';
-import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 
 export async function verifyJWT(token: string) {
   try {
@@ -11,7 +10,7 @@ export async function verifyJWT(token: string) {
     });
     return payload;
   } catch (error) {
-
+    console.log('token: ', token, 'jwtsecret: ', process.env.JWT_SECRET);
     throw error;
   }
 }

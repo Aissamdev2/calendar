@@ -13,7 +13,7 @@ export default function AddEventForm({ setAddEventFormVisible }: { setAddEventFo
     } else if (state === 'Failed to create event') {
       setErrorMessage('No se pudo crear el evento')
     }
-  }), [state]
+  }, [state, setErrorMessage, setAddEventFormVisible])
 
   return (
     <div className="flex absolute justify-center items-center h-[calc(100vh-100px)] w-screen backdrop-blur-[2px] z-10">

@@ -1,9 +1,28 @@
 'use server'
 
-import { signIn } from '@/app/auth'
+import { signIn, signUp } from '@/app/auth'
 import { cookies } from 'next/headers'
 import { revalidateTag } from "next/cache";
 import { Event } from "@/app/lib/definitions";
+
+
+
+export async function register(currentState: unknown, formData: FormData) {
+  try {
+    await signUp(formData)
+  } catch (error) {
+    if (error instanceof Error) {
+      switch (error.cause) {
+        case 'USER_NOT_CREATED':
+          return 'User not created.'
+      }
+    }
+    else {
+      return 'Unknown error.'
+    }
+    throw error
+  }
+}
 
 export async function authenticate(_currentState: unknown, formData: FormData) {
   try {
@@ -31,7 +50,7 @@ export async function addEvent(_currentState: unknown, formData: FormData) {
   const event = { name, date, time }
   console.log('event is: ', event)
   
-  const response = await fetch('http://localhost:3000/api/events', {
+  const response = await fetch(process.env.BASE_URL as string + '/api/events', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -47,7 +66,7 @@ export async function addEvent(_currentState: unknown, formData: FormData) {
 }
 
 export async function getEvents() {
-  const response = await fetch('https://calendar-delta-nine.vercel.app/api/events', {
+  const response = await fetch(process.env.BASE_URL as string + '/api/events', {
     headers: {
       Cookie: cookies().toString()
     },
