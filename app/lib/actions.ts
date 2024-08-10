@@ -66,6 +66,7 @@ export async function addEvent(_currentState: unknown, formData: FormData) {
 }
 
 export async function getEvents() {
+  console.log(process.env.BASE_URL as string)
   const response = await fetch(process.env.BASE_URL as string + '/api/events', {
     headers: {
       Cookie: cookies().toString()
