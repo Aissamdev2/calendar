@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { SUBJECTS_COLORS_1, SUBJECT_BG_COLORS, SUBJECT_BORDER_COLORS } from "./app/lib/utils";
 
 const config: Config = {
   content: [
@@ -6,7 +7,7 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  safelist: ['bg-[#95dc5c]', 'bg-[#FC7771]', 'border-[#00FF0E]', 'border-[#FF0B00]'],
+  safelist: [Object.values(SUBJECTS_COLORS_1), Object.values(SUBJECT_BG_COLORS), Object.values(SUBJECT_BORDER_COLORS)].flat(),
   theme: {
     extend: {
       backgroundImage: {
@@ -14,6 +15,12 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      animation: {
+        "spin-slow": "spin 3s linear infinite",
+        "pulse-slow": "pulse 3s linear infinite",
+        "pulse-fast": "pulse 1s linear infinite",
+      },
+    
     },
   },
   plugins: [],

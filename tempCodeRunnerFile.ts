@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
     return Response.redirect(new URL('/login', request.url))
   }
 
-  if (session && (!request.nextUrl.pathname.startsWith('/gemif/calendar') && !request.nextUrl.pathname.startsWith('/gemif'))) {
+  if (session && !request.nextUrl.pathname.startsWith('/gemif/calendar')) {
     if (!session.token) {
       console.log('no token')
       return Response.redirect(new URL('/login', request.url))

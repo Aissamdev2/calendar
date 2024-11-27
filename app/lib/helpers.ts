@@ -19,3 +19,23 @@ export function getSession(): UserCookie | null {
   const sessionString = cookies().get('session')?.value;
   return sessionString ? JSON.parse(sessionString) : null;
 }
+
+export async function verifySession() {
+  const session = getSession()
+  if (!session) {
+    throw new Error('no session', { cause: 'NO_SESSION' })
+  }
+  const { token } = session
+  if (!token) {
+    throw new Error('no token', { cause: 'NO_TOKEN' })
+  }
+  const payload = await verifyJWT(token)
+  if (!payload) {
+    throw new Error('no payload', { cause: 'NO_PAYLOAD' })
+  }
+  const { id: userId } = session
+  if (!userId) {
+    throw new Error('no userId', { cause: 'NO_USER_ID' })
+  }
+  return session
+}

@@ -9,13 +9,19 @@ export default function Page() {
 
   return (
     <div className="flex absolute justify-center items-center bg-[#d0e1ff] h-screen w-screen backdrop-blur-[2px] z-10">
-      <form action={dispatch} className="flex flex-col gap-[10px] bg-[#e8f0fd] w-[400px] h-fit rounded-[30px] border-[#6c9ded] py-10 px-10">
+      <form action={dispatch} className="flex flex-col gap-[10px] bg-[#e8f0fd] w-[600px] h-fit rounded-[30px] border-[#6c9ded] py-10 px-10">
         <h2 className="text-3xl font-semibold text-center">Registrarse</h2>
         <p className="text-red-500 font-bold text-center min-h-6">{errorMessage}</p>
         <div className='flex flex-col gap-[20px] mb-[25px] px-[20px]'>
-          <div className='flex flex-col '>
-            <label htmlFor="name" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre de usuario</label>
-            <input autoComplete='off' type="text" name="name" id="name" className="bg-[white] border outline-none border-gray-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[90%] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-[border-color] duration-100" required />
+          <div className='flex'>
+            <div className='flex flex-col w-[67%]'>
+              <label htmlFor="name" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre de usuario</label>
+              <input autoComplete='off' type="text" name="name" id="name" className="bg-[white] border outline-none border-gray-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[90%] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-[border-color] duration-100" required />
+            </div>
+            <div className='flex flex-col w-[25%]'>
+              <label htmlFor="year" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">Curso</label>
+              <input autoComplete='off' type="number" name="year" id="year" className="bg-[white] border outline-none border-gray-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[90%] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-[border-color] duration-100" required />
+            </div>
           </div>
           <div className='flex flex-col '>
             <label htmlFor="email" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo electrónico</label>

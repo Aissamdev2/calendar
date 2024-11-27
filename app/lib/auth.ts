@@ -3,7 +3,7 @@
 import bcrypt from "bcrypt";
 import { db } from "@vercel/postgres";
 import { SignJWT } from "jose";
-import { User } from "./lib/definitions";
+import { User, UserCookie } from "@/app/lib/definitions";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -11,13 +11,14 @@ import { redirect } from "next/navigation";
 export async function signUp(formData: FormData) {
   const client = await db.connect();
   const name = formData.get("name") as string;
+  const year = formData.get("year") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const hashedPassword = await bcrypt.hash(password, 10);
   const role = "user";
 
   const user = await client
-    .sql<User>`INSERT INTO users (name, role, email, password) VALUES (${name}, ${role}, ${email}, ${hashedPassword}) RETURNING *`
+    .sql<User>`INSERT INTO users (name, role, year, email, password) VALUES (${name}, ${role}, ${year}, ${email}, ${hashedPassword}) RETURNING *`
     .then((res) => res.rows[0]);
   
   if (!user) {
@@ -58,7 +59,7 @@ export async function signIn(formData: FormData) {
   .setAudience(process.env.JWT_AUDIENCE as string)
   .sign(new TextEncoder().encode(process.env.JWT_SECRET));
 
-  const session = {
+  const session: UserCookie = {
     id: user?.id,
     token: token
   }

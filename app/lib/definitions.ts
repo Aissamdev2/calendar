@@ -1,21 +1,29 @@
 export type User = {
   id: string;
   name: string;
+  year: string;
+  role: string;
   email: string;
   password: string;
 };
 
 export type UserCookie = {
   id: string;
-  name: string;
-  email: string;
   token: string;
 }
 
 export type Event = {
   id: string;
   name: string;
+  description?: string;
+  subject?: string;
   date: string;
-  time: string;
+  time?: string;
   userId: string;
+}
+
+export type RemainingTime = {
+  days: number;
+  hours: number;
+  minutes: number;
 }
