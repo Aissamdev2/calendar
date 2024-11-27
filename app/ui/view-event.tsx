@@ -5,6 +5,6 @@ export default async function ViewEvent({ id }: { id: string }) {
   const event = await getEvent(id); 
 
   return (
-    <ViewEventClient event={event} />
+    <ViewEventClient id={event?.id} />
   )
 }

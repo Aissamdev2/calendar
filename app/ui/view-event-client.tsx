@@ -13,7 +13,7 @@ import { useEvents } from "../lib/use-events"
 import ViewEventSkeleton from "./view-event-skeleton"
 import { mutate } from "swr"
 
-export default function ViewEventClient({ id }: { id: string }) {
+export default function ViewEventClient({ id }: { id: string | undefined }) {
 
   const removeEvent = async (_currentState: unknown, formData: FormData) => {
     mutate("http://localhost:3000/api/events", deleteEvent(formData),{
