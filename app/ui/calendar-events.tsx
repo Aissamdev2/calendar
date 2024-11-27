@@ -5,6 +5,6 @@ export default async function CalendarEvents() {
   const events = await getEvents()
 
   return (
-    <CalendarClient events={events} />
+    <CalendarClient />
   )
 }
