@@ -1,3 +1,5 @@
+import Calendar from "@/app/ui/calendar";
+
 export default function Default() {
-  return null
+  return <Calendar />
 }

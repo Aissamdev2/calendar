@@ -67,9 +67,9 @@ export default function ViewEventClient({ id }: { id: string | undefined }) {
     }
   }, [event])
 
-  if (!event) return null
-
+  
   if (isLoading) return <ViewEventSkeleton />
+  if (!event) return null
   return (
     <form action={dispatch} className="w-full h-full fixed top-[100px] left-0 z-[60] overflow-x-hidden overflow-y-auto">
       <input type="hidden" name="id" value={event.id} />

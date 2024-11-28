@@ -38,8 +38,13 @@ export default function AddEventForm({ subjects }: { subjects: string[] }) {
     return (
       <SWRProvider>
       <form action={dispatch} className="w-fit flex flex-col h-fit py-4 px-10 bg-white z-[3] rounded-2xl">
-        <div className="flex justify-items-start pb-4 border-b border-gray-200">
+        <div className="flex justify-between pb-4 border-b border-gray-200">
           <h2 className="text-sm text-gray-900 font-medium">Anadir evento</h2>
+          <button className="block cursor-pointer" type="button" onClick={() => router.back()} >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.75732 7.75739L16.2426 16.2427M16.2426 7.75739L7.75732 16.2427" stroke="black" strokeWidth="1.6" strokeLinecap="round"></path>
+            </svg>
+          </button>
         </div>
         <div className="flex pt-6 gap-[50px]">
           <div className="flex flex-col justify-between">

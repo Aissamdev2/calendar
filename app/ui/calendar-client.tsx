@@ -14,7 +14,7 @@ type Props = {
 };
 
 export default function CalendarClient() {
-  const { month, year } = useContext(DateContext);
+  const { date, month, year } = useContext(DateContext);
   const { events, error, isLoading } = useEvents()
   
   console.log('Is loading: ', isLoading)
@@ -24,7 +24,6 @@ export default function CalendarClient() {
     )
   }
 
-
   return (
     <SWRProvider>
       {
@@ -33,9 +32,9 @@ export default function CalendarClient() {
             return compareDates(new Date(event.date), item.date);
           })
           return (
-            <div key={item.date.toDateString() } className={`group overflow-hidden flex transition-[border-color] duration-300 bg-[#ffffff] border-[1px] border-[#a19aff6b] hover:border-[#5551FF] ${item.isCurrentMonth ? '' : 'opacity-40 bg-[#d9d7d7]'}`}>
+            <div key={item.date.toDateString() } className={`group overflow-hidden flex transition-[border-color] duration-300 bg-[#ffffff] border-[1px] border-[#a19aff6b] hover:border-[#5551FF] ${item.isCurrentMonth ? '' : 'opacity-40 bg-[#ebe6e6]'} ${item.isToday ? 'border-[2px]' : ''}`}>
               <div className='flex flex-col justify-start items-center w-[30px]'>
-                <div className={`group-hover:text-[#5551FF] transition-[background-color,border-color] duration-300 w-[30px] text-center border-r border-b py-[1px] rounded-br-[10px] border-[#a19affb1] hover:border-[#5551FF] basis-4 ${item.date.getDay() === 0 || item.date.getDay() === 6 ? 'text-red-500' : ''}`}>{item.date.getDate()}</div>
+                <div className={`transition-[background-color,border-color,text] duration-300 w-[30px] text-center border-r border-b py-[1px] rounded-br-[10px] border-[#a19affb1] hover:border-[#5551FF] basis-4 ${item.date.getDay() === 0 || item.date.getDay() === 6 ? 'text-red-500' : ''} ${item.isToday ? 'bg-[#b3b3ff] group-hover:text-[#ffffff]' : 'group-hover:text-[#5551FF]'}`}>{item.date.getDate()}</div>
               </div>
               <div className={`flex-grow-[1] h-[90%] p-2 self-center grid grid-rows-3 grid-cols-2 grid-flow-col gap-y-[1px] gap-x-1 top-0 left-0`}>
               {

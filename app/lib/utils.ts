@@ -155,11 +155,13 @@ export function getDaysInMonth(year: number, month: number): number {
 type CalendarDate = {
   date: Date,
   isCurrentMonth?: boolean
+  isToday?: boolean
 }
 
 export function getCalendarDates(year: number, month: number): CalendarDate[] {
   const dates: CalendarDate[] = [];
   const daysInCurrentMonth = getDaysInMonth(year, month);
+  const today = new Date();
 
   // Calculate the first day of the month (0: Monday, 1: Tuesday, ..., 6: Sunday)
   let firstDayOfMonth = new Date(year, month - 1, 1).getDay();
@@ -175,6 +177,7 @@ export function getCalendarDates(year: number, month: number): CalendarDate[] {
     dates.push({
       date: new Date(previousMonthYear, previousMonth - 1, daysInPreviousMonth - i + 1),
       isCurrentMonth: false,
+      isToday: compareDates(today, new Date(previousMonthYear, previousMonth - 1, daysInPreviousMonth - i + 1)),
     });
   }
 
@@ -183,6 +186,7 @@ export function getCalendarDates(year: number, month: number): CalendarDate[] {
     dates.push({
       date: new Date(year, month - 1, i),
       isCurrentMonth: true,
+      isToday: compareDates(today, new Date(year, month - 1, i)),
     });
   }
 
@@ -196,6 +200,7 @@ export function getCalendarDates(year: number, month: number): CalendarDate[] {
     dates.push({
       date: new Date(year, month, i),
       isCurrentMonth: false,
+      isToday: compareDates(today, new Date(year, month, i)),
     });
   }
 
