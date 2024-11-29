@@ -10,7 +10,7 @@ import CalendarClient from "./calendar-client";
 export default async function Calendar() {
 
   return (
-    <main className="flex justify-center  items-end h-[calc(100vh-49px)] w-screen px-5 py-3 bg-[#eaf3ff] absolute bottom-0 left-0">
+    <main className="flex justify-center  items-end h-[calc(100vh-60px)] w-screen px-5 py-3 bg-[#eaf3ff] absolute bottom-0 left-0">
       <DateProvider>
         <div className="bg-[#ffffff] w-full h-full rounded-xl flex flex-col items-center border-[3px]">
           <div className="flex justify-between items-center flex-grow-[1] text-xl w-full px-5 py-2">

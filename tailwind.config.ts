@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import { SUBJECTS_COLORS_1, SUBJECT_BG_COLORS, SUBJECT_BORDER_COLORS } from "./app/lib/utils";
+const plugin = require("tailwindcss/plugin")
 
 const config: Config = {
   content: [
@@ -23,6 +24,19 @@ const config: Config = {
     
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(({ addUtilities }: { addUtilities: any }) => {
+    addUtilities({
+      /* Chrome, Safari and Opera */
+      ".scrollbar-hidden::-webkit-scrollbar": {
+        display: "none",
+      },
+
+      ".scrollbar-hidden": {
+        "scrollbar-width": "none" /* Firefox */,
+        "-ms-overflow-style": "none" /* IE and Edge */,
+      },
+    })
+  }),],
 };
 export default config;

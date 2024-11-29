@@ -1,25 +1,16 @@
 import { NextRequest } from 'next/server'
-import { verifyJWT, getSession } from './app/lib/helpers';
+import { verifySession } from './app/lib/helpers';
 
 export async function middleware(request: NextRequest) {
-  const session = getSession()
+  const verification = await verifySession()
 
-  if (!session && (!request.nextUrl.pathname.startsWith('/login') && !request.nextUrl.pathname.startsWith('/register'))) {
-    console.log('no session')
-    return Response.redirect(new URL('/login', request.url))
+  const sessionError = verification.error
+
+  if ((sessionError === 'No session' || sessionError === 'No token') && (!request.nextUrl.pathname.startsWith('/login') && !request.nextUrl.pathname.startsWith('/register'))) {
+    return Response.redirect(new URL(`/login`, request.url))
   }
 
-  if (session && (!request.nextUrl.pathname.startsWith('/gemif/calendar') && !request.nextUrl.pathname.startsWith('/gemif'))) {
-    if (!session.token) {
-      console.log('no token')
-      return Response.redirect(new URL('/login', request.url))
-    }
-    const payload = await verifyJWT(session.token);
-
-    if (!payload) {
-      return Response.redirect(new URL('/login', request.url))
-    }
-    
+  if (!sessionError && (!request.nextUrl.pathname.startsWith('/gemif'))) { 
     return Response.redirect(new URL('/gemif/calendar', request.url))
   }
 }

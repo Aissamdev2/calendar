@@ -27,3 +27,8 @@ export type RemainingTime = {
   hours: number;
   minutes: number;
 }
+
+export type VerifySession = {
+  error: string | null;
+  session: UserCookie | null;
+}

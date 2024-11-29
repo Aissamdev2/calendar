@@ -1,6 +1,6 @@
 import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
-import { UserCookie } from './definitions';
+import { UserCookie, VerifySession } from './definitions';
 
 export async function verifyJWT(token: string) {
   try {
@@ -10,7 +10,6 @@ export async function verifyJWT(token: string) {
     });
     return payload;
   } catch (error) {
-    console.log('token: ', token, 'jwtsecret: ', process.env.JWT_SECRET);
     throw error;
   }
 }
@@ -20,22 +19,23 @@ export function getSession(): UserCookie | null {
   return sessionString ? JSON.parse(sessionString) : null;
 }
 
-export async function verifySession() {
-  const session = getSession()
+export async function verifySession(): Promise<VerifySession> {
+  const sessionString = cookies().get('session')?.value;
+  const session = sessionString ? JSON.parse(sessionString) : null;
   if (!session) {
-    throw new Error('no session', { cause: 'NO_SESSION' })
+    return { error: "No session", session: null }
   }
   const { token } = session
   if (!token) {
-    throw new Error('no token', { cause: 'NO_TOKEN' })
+    return { error: "No token", session: null }
   }
   const payload = await verifyJWT(token)
   if (!payload) {
-    throw new Error('no payload', { cause: 'NO_PAYLOAD' })
+    return { error: "Invalid token", session: null }
   }
   const { id: userId } = session
   if (!userId) {
-    throw new Error('no userId', { cause: 'NO_USER_ID' })
+    return { error: "No user id", session: null }
   }
-  return session
+  return { error: null, session}
 }

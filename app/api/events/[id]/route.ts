@@ -4,7 +4,9 @@ import { verifySession } from '@/app/lib/helpers'
 export async function GET(request: Request, { params }: { params: { id: string } }) {
 
   try {
-    const session = await verifySession();
+    const verification = await verifySession();
+    const session = verification.session
+    if (!session) return new Response('Unauthorized', { status: 401 })
     const { id: userId } = session
     const { id } = params
     const event = (await sql`SELECT * FROM events WHERE id = ${id} AND userId = ${userId}`).rows[0]
@@ -17,7 +19,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
-    const session = await verifySession();
+    const verification = await verifySession();
+    const session = verification.session
+    if (!session) return new Response('Unauthorized', { status: 401 })
     const { id: userId } = session;
     const { id } = params;
 
@@ -80,7 +84,9 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
-    const session = await verifySession();
+    const verification = await verifySession();
+    const session = verification.session
+    if (!session) return new Response('Unauthorized', { status: 401 })
     const { id: userId } = session;
     const { id } = params;
     await sql`DELETE FROM events WHERE id = ${id} AND userId = ${userId}`;

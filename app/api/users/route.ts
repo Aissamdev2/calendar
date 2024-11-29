@@ -5,12 +5,13 @@ import { User } from '@/app/lib/definitions';
 export async function GET() {
 
   try {
-    const session = await verifySession();
+    const verification = await verifySession();
+    const session = verification.session
+    if (!session) return new Response('Unauthorized', { status: 401 })
     const { id } = session
     const user = (await sql`SELECT * FROM users WHERE id = ${id}`).rows[0] as User
     return new Response(JSON.stringify(user))
   } catch (error) {
-    console.log(error)
     return new Response('Unauthorized', { status: 401 })
   }
 }

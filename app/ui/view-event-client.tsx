@@ -33,10 +33,8 @@ export default function ViewEventClient({ id }: { id: string | undefined }) {
 
   useEffect(() => {
     if (state === 'Event deleted') {
-      console.log('Event deletedd');
       router.back();
     } else if (state === 'Failed to delete event') {
-      console.log('Event NOT deledtedd');
       setErrorMessage('No se pudo eliminar el evento');
     }
   }, [state, setErrorMessage, router]);

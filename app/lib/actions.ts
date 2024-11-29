@@ -1,9 +1,9 @@
 'use server'
 
-import { signIn, signUp } from '@/app/lib/auth'
+import { signIn, signOut, signUp } from '@/app/lib/auth'
 import { cookies } from 'next/headers'
 import { revalidateTag } from "next/cache";
-import { Event } from "@/app/lib/definitions";
+import { Event, User } from "@/app/lib/definitions";
 import { SUBJECTS } from '@/app/lib/subjects';
 import { redirect } from 'next/navigation';
 import { mutate } from 'swr';
@@ -28,21 +28,16 @@ export async function register(currentState: unknown, formData: FormData) {
 }
 
 export async function authenticate(_currentState: unknown, formData: FormData) {
-  try {
-    await signIn(formData)
-  } catch (error) {
-    if (error instanceof Error) {
-      switch (error.cause) {
-        case 'EMAIL_NOT_FOUND':
-          return 'Email not found.'
-        case 'INVALID_PASSWORD':
-          return 'Invalid password.'
-      }
-    }
-    else {
-      return 'Unknown error.'
-    }
-    throw error
+  const error = await signIn(formData)
+  if (error) {
+    return error
+  }
+}
+
+export async function logout(_currentState: unknown) {
+  const error = await signOut()
+  if (error) {
+    return error
   }
 }
 
@@ -126,7 +121,6 @@ export async function getEvents() {
 }
 
 export async function getEvent(id: string) {
-  console.log('RUNNING GET EVENT: ', id)
   const response = await fetch(process.env.BASE_URL as string + '/api/events/' + id, {
     headers: {
       Cookie: cookies().toString()
@@ -143,7 +137,7 @@ export async function getEvent(id: string) {
   }
 }
 
-export async function getUser() {
+export async function getUser(): Promise<User> {
   const response = await fetch(process.env.BASE_URL as string + '/api/users', {
     headers: {
       Cookie: cookies().toString()
@@ -155,6 +149,8 @@ export async function getUser() {
   const user = await response.json();
   return user;
 }
+
+
 
 export async function getSubjects() {
   const session = await getUser();
