@@ -34,7 +34,7 @@ export default function Page() {
         </div>
         <LoginButton />
         <div className='w-full border-t border-[#5f3fbe61] my-[15px]' />
-        <p className="text-center">Ya tienes cuenta?</p>
+        <p className="text-center">¿Ya tienes cuenta?</p>
         <Link href='/login' className="bg-[#592baf] text-white outline-none max-w-[150px] self-center hover:bg-[#6c41bd] font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-[10px] transition-[background-color, border-color, color] duration-300">Iniciar sesión</Link>
       </form>
     </div>
