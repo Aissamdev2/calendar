@@ -1,16 +1,19 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { Event } from "../lib/definitions";
+import { Event, Subject, User } from "../lib/definitions";
 import { useRouter } from "next/navigation";
 import { useFormState, useFormStatus } from "react-dom";
-import { SUBJECT_BG_COLORS, SUBJECT_BORDER_COLORS, SUBJECTS_COLORS_1 } from "../lib/utils";
 import { updateEvent } from "../lib/actions";
+import { useUser } from "../lib/use-user";
+import { getSubjects } from "../lib/utils";
+import { useSubjects } from "../lib/use-subjects";
 
-export default function EditEventClient({ event, subjects }: { event: Event, subjects: string[] }) {
+export default function EditEventClient({ event }: { event: Event }) {
   const [state, dispatch] = useFormState(updateEvent, undefined)
   const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
+  const { subjects, error, isLoading } = useSubjects()
 
   useEffect(() => {
     if (state === 'Event updated') {
@@ -20,12 +23,16 @@ export default function EditEventClient({ event, subjects }: { event: Event, sub
     }
   }, [state, setErrorMessage, router])
 
+  if (!subjects) {
+    return null
+  }
+
     return (
       <form action={dispatch} className="w-fit flex flex-col h-fit py-4 px-10 bg-white z-[3] rounded-2xl">
         <input type="hidden" name="id" value={event.id} />
         <div className="flex justify-between items-center pb-4 border-b border-gray-200">
           <h2 className="text-sm text-gray-900 font-medium">Editar evento</h2>
-          <button className="block cursor-pointer" onClick={() => router.back()} >
+          <button className="block cursor-pointer" type="button" onClick={() => router.back()} >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M7.75732 7.75739L16.2426 16.2427M16.2426 7.75739L7.75732 16.2427" stroke="black" strokeWidth="1.6" strokeLinecap="round"></path>
             </svg>
@@ -76,7 +83,7 @@ export default function EditEventClient({ event, subjects }: { event: Event, sub
                 Asignatura
               </label>
               <div className="flex flex-col gap-[5px]">
-                <SubjectRadios subjects={subjects} subject={event.subject ?? ''}/>
+                <SubjectRadios subjects={subjects} event={event}/>
               </div>
             </div>
           </div>
@@ -105,48 +112,88 @@ function EditButton() {
   )
 }
 
-function SubjectRadios({subjects, subject}: {subjects: string[]; subject: string}) {
+
+function SubjectRadios({ subjects, event }: { subjects: Subject[], event: Event }) {
+  const emptyState = () => {
+    const subjectsName = subjects.map((subject) => subject.name)
+    const values = Array(subjects.length).fill(false)
+    const state: Record<string, boolean> = Object.fromEntries(subjectsName.map((subject, index) => [subject, values[index]]))
+    return state
+  }
+
   const [isChecked, setIsChecked] = useState(() => {
-    return subjects.map((subj) => subj === subject)
-  })
+    let state = emptyState()
+    state[subjects.find((subject) => subject.id === event.subjectid)!.name] = true
+    return state
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const {checked} = e.target
-    setIsChecked((prevState) => {
-      const newState = Array(prevState.length).fill(false)
-      newState[index] = checked
-      return newState
-    })
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, target: string) => {
+    const { checked } = e.target;
+    setIsChecked((prevState: Record<string, boolean>) => {
+      let state = emptyState()
+      state[target] = checked;
+      return state;
+    });
+  };
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
-    if (isChecked[index]) {
-      setIsChecked(Array(subjects.length).fill(false))
+  const handleClick = (event: React.MouseEvent<HTMLElement>, target: string) => {
+    if (isChecked[target]) {
+      setIsChecked(() => {
+        let state = emptyState()
+        state["Otros"] = true
+        return state
+      });
     }
-  }
-  console.log(isChecked)
+  };
 
   return (
-    subjects.map((subject, index) => {
-      return (
-        <div key={subject + 'div'} className="flex items-center">
-          <input type='radio' key={subject} id={subject} className={`hidden peer`} onChange={(event) => handleChange(event, index)} value={subject} onClick={(event) => handleClick(event, index)} checked={isChecked[index]} name='subject'/>
-          <label htmlFor={subject}>
-            <div className={`max-w-[170px] ${SUBJECT_BG_COLORS[subject]} cursor-pointer flex items-center gap-2 ${SUBJECTS_COLORS_1[subject]} ${SUBJECT_BORDER_COLORS[subject]} border text-xs font-medium mr-2 px-1.5 rounded-full py-1 }`}>
-            <p className="overflow-hidden truncate w-[">{subject}</p>
-                {
-                  isChecked[index] && (
-                    <div className="min-w-[8px]">
-                      <svg width='8' height='8' viewBox='0 0 8 8' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                        <path d='M1.52539 6.47487L6.47514 1.52512M6.47514 6.47487L1.52539 1.52512' stroke='#6B7280' strokeWidth='1.4' strokeLinecap='round' strokeLinejoin='round'></path>
-                      </svg>
-                    </div>
-                  )
-                }
+    <>
+      {subjects.map((subject, index) => {
+        return <div key={subject.id} className="flex items-center">
+          <input
+            type="radio"
+            id={subject.id}
+            className="hidden peer"
+            onChange={(event) => handleChange(event, subject.name)}
+            value={subject.id}
+            onClick={(event) => handleClick(event, subject.name)}
+            checked={isChecked[subject.name]}
+            name="subjectid"
+          />
+          <label htmlFor={subject.id}>
+            <div
+              style={{
+                backgroundColor: subject.bgcolor,
+                borderColor: subject.bordercolor,
+                color: subject.color,
+              }}
+              className={
+                `max-w-[170px] cursor-pointer flex items-center gap-2 border-[2px] text-xs font-medium mr-2 px-1.5 rounded-full py-1`}
+            >
+              <p className="overflow-hidden truncate w-[">{subject.name}</p>
+              {isChecked[subject.name] && (
+                <div className="min-w-[8px]">
+                  <svg
+                    width="8"
+                    height="8"
+                    viewBox="0 0 8 8"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M1.52539 6.47487L6.47514 1.52512M6.47514 6.47487L1.52539 1.52512"
+                      stroke="#6B7280"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                  </svg>
+                </div>
+              )}
             </div>
           </label>
         </div>
-      )
-    })
-  )
+      })}
+    </>
+  );
 }

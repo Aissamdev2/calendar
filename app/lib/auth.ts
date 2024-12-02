@@ -1,12 +1,34 @@
 'use server';
 
 import bcrypt from "bcrypt";
-import { db } from "@vercel/postgres";
+import { db, VercelPoolClient } from "@vercel/postgres";
 import { SignJWT } from "jose";
 import { User, UserCookie } from "@/app/lib/definitions";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { SUBJECTS_COLORS_OBJ, SUBJECTS_BG_COLORS_OBJ, SUBJECTS_BORDER_COLORS_OBJ } from "@/app/lib/utils";
+import { SUBJECTS_PLAIN } from "./subjects";
+import { SUBJECTS } from "./subjects";
 
+
+
+async function seedInitialSubjects(user: User, client: VercelPoolClient) {
+  const now = new Date();
+  const quadri = now.getMonth() < 7 ? 1 : 0;
+  const subjects = ['Otros',...SUBJECTS[Number(user.year) - 1][quadri]]
+
+  subjects.forEach(async (subject) => {
+    await client.sql`
+    INSERT INTO subjects (
+      name, color, bgColor, borderColor, userId
+    ) VALUES (
+      ${subject}, ${SUBJECTS_COLORS_OBJ[subject]}, ${SUBJECTS_BG_COLORS_OBJ[subject]}, ${SUBJECTS_BORDER_COLORS_OBJ[subject]}, ${user.id}
+    ) ON CONFLICT (id) DO NOTHING;
+    `;
+  });
+
+
+}
 
 export async function signUp(formData: FormData): Promise<string> {
   const client = await db.connect();
@@ -17,6 +39,7 @@ export async function signUp(formData: FormData): Promise<string> {
   const hashedPassword = await bcrypt.hash(password, 10);
   const role = "user";
 
+
   const user = await client
     .sql<User>`INSERT INTO users (name, role, year, email, password) VALUES (${name}, ${role}, ${year}, ${email}, ${hashedPassword}) RETURNING *`
     .then((res) => res.rows[0]);
@@ -24,6 +47,8 @@ export async function signUp(formData: FormData): Promise<string> {
   if (!user) {
     return "USER_NOT_CREATED";
   }
+
+  await seedInitialSubjects(user, client);
 
   redirect("/login");
 }

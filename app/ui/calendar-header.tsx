@@ -27,7 +27,7 @@ export default function CalendarHeader() {
   };
   
   return (
-    <div className='flex items-center gap-8 ml-[550px] flex-grow-[1]'>
+    <div className='flex items-center lg:gap-8 md:gap-4 gap-2 justify-center flex-grow-[1]'>
       <button type='button' onClick={handleMonthDecrement} className='w-11 h-11 text-[#5551FF] bg-indigo-50 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500  hover:bg-indigo-100'>
       {'<'}
       </button>

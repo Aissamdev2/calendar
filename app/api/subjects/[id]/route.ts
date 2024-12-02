@@ -1,22 +1,6 @@
 import { sql } from '@vercel/postgres'
 import { verifySession } from '@/app/lib/helpers'
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-
-  try {
-    const verification = await verifySession();
-    const session = verification.session
-    if (!session) return new Response('Unauthorized', { status: 401 })
-    const { id: userId } = session
-    const { id } = params
-    const event = (await sql`SELECT * FROM events WHERE id = ${id} AND userId = ${userId}`).rows[0]
-    return new Response(JSON.stringify(event))
-  } catch (error) {
-    console.log(error)
-    return new Response('Unauthorized', { status: 401 })
-  }
-}
-
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
     const verification = await verifySession();
@@ -28,7 +12,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     const body = await request.json();
     if (!body) return new Response('Invalid request body', { status: 400 });
 
-    const { name, date, time, description, subjectid } = body;
+    const { name, color, bgColor, borderColor } = body;
 
     // Prepare the fields to update based on the provided fields
     const fieldsToUpdate: string[] = [];
@@ -38,21 +22,17 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       fieldsToUpdate.push(`name = $${fieldsToUpdate.length + 1}`);
       values.push(name);
     }
-    if (date !== undefined) {
+    if (color !== undefined) {
       fieldsToUpdate.push(`date = $${fieldsToUpdate.length + 1}`);
-      values.push(date);
+      values.push(color);
     }
-    if (time !== undefined) {
+    if (bgColor !== undefined) {
       fieldsToUpdate.push(`time = $${fieldsToUpdate.length + 1}`);
-      values.push(time);
+      values.push(bgColor);
     }
-    if (description !== undefined) {
+    if (borderColor !== undefined) {
       fieldsToUpdate.push(`description = $${fieldsToUpdate.length + 1}`);
-      values.push(description);
-    }
-    if (subjectid !== undefined) {
-      fieldsToUpdate.push(`subjectId = $${fieldsToUpdate.length + 1}`);
-      values.push(subjectid);
+      values.push(borderColor);
     }
 
     if (fieldsToUpdate.length === 0) {
@@ -65,7 +45,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
     // Construct the SQL query with placeholders
     const query = `
-      UPDATE events 
+      UPDATE subjects 
       SET ${fieldsToUpdate.join(', ')}
       WHERE id = $${fieldsToUpdate.length + 1} AND userId = $${fieldsToUpdate.length + 2}
     `;
@@ -75,7 +55,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     // Execute the SQL query using sql.query()
     await sql.query(query, values);
 
-    return new Response('Event updated');
+    return new Response('Subject updated');
   } catch (error) {
     console.log(error);
     return new Response('Unauthorized', { status: 401 });
@@ -89,8 +69,8 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     if (!session) return new Response('Unauthorized', { status: 401 })
     const { id: userId } = session;
     const { id } = params;
-    await sql`DELETE FROM events WHERE id = ${id} AND userId = ${userId}`;
-    return new Response('Event deleted');
+    await sql`DELETE FROM subjects WHERE id = ${id} AND userId = ${userId}`;
+    return new Response('Subject deleted');
   } catch (error) {
     console.log(error);
     return new Response('Unauthorized', { status: 401 });

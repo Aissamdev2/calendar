@@ -17,11 +17,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <meta name="google-site-verification" content="vRq6go1xrzjxByoh4eWmCoJJCefv6bCzcCfTFN8GSdo" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className + " flex flex-col h-screen"}>{children}</body>
     </html>
   );
 }

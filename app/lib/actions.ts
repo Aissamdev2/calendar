@@ -3,8 +3,9 @@
 import { signIn, signOut, signUp } from '@/app/lib/auth'
 import { cookies } from 'next/headers'
 import { revalidateTag } from "next/cache";
-import { Event, User } from "@/app/lib/definitions";
+import { Event, Subject, User } from "@/app/lib/definitions";
 import { SUBJECTS } from '@/app/lib/subjects';
+import { SUBJECTS_COLORS_OBJ, SUBJECTS_BG_COLORS_OBJ, SUBJECTS_BORDER_COLORS_OBJ } from './utils';
 import { redirect } from 'next/navigation';
 import { mutate } from 'swr';
 
@@ -46,10 +47,9 @@ export async function addEvent(formData: FormData) {
   const date = formData.get('date') as string
   const time = formData.get('time') as string | undefined
   const description = formData.get('description') as string | undefined
-  const subject = formData.get('subject') as string | undefined
-  const event = { name, description, subject, date, time }
+  const subjectid = formData.get('subjectid') as string | undefined
+  const event = { name, description, subjectid, date, time }
   const filteredEvent = Object.fromEntries(Object.entries(event).filter(([_, v]) => v !== undefined))
-  console.log('event is: ', event)
   
   const response = await fetch(process.env.BASE_URL as string + '/api/events', {
     method: 'POST',
@@ -71,8 +71,8 @@ export async function updateEvent(_currentState: unknown, formData: FormData) {
   const date = formData.get('date') as string
   const time = formData.get('time') as string | undefined
   const description = formData.get('description') as string | undefined
-  const subject = formData.get('subject') as string | undefined
-  const event = { name, description, subject, date, time }
+  const subjectid = formData.get('subjectid') as string | undefined
+  const event = { name, description, subjectid, date, time }
   const filteredEvent = Object.fromEntries(Object.entries(event).filter(([_, v]) => v !== undefined))
 
   const response = await fetch(process.env.BASE_URL as string + '/api/events/' + id, {
@@ -137,6 +137,57 @@ export async function getEvent(id: string) {
   }
 }
 
+export async function getSubjects() {
+  const response = await fetch(process.env.BASE_URL as string + '/api/subjects', {
+    headers: {
+      Cookie: cookies().toString()
+    },
+    next: { tags: ['subjects'] }
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch subjects');
+  }
+  const subjects: Subject[] = await response.json();
+  return subjects;
+}
+
+export async function updateSubjects(formData: FormData) {
+  const subjectsToAdd: string[] = JSON.parse(formData.get("subjectsToAdd") as string)
+  const subjectsToRemove: Subject[] = JSON.parse(formData.get("subjectsToRemove") as string)
+
+  
+  subjectsToAdd.forEach(async (subject: string) => {
+    const payload = { name: subject, color: SUBJECTS_COLORS_OBJ[subject], bgcolor: SUBJECTS_BG_COLORS_OBJ[subject], bordercolor: SUBJECTS_BORDER_COLORS_OBJ[subject] }
+    console.log('payload', payload)
+    const response = await fetch(process.env.BASE_URL as string + '/api/subjects/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Cookie: cookies().toString(),
+      },
+      body: JSON.stringify(payload)
+    })
+    if (!response.ok) {
+      throw new Error('Failed to add subject: ' + subject)
+    }
+  })
+
+  subjectsToRemove.forEach(async (subject: Subject) => {
+    const response = await fetch(process.env.BASE_URL as string + '/api/subjects/' + subject.id, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Cookie: cookies().toString(),
+      },
+    })
+    if (!response.ok) {
+      throw new Error('Failed to remove subject: ' + subject.name)
+    }
+  })
+  revalidateTag('subjects')
+  return getSubjects()
+}
+
 export async function getUser(): Promise<User> {
   const response = await fetch(process.env.BASE_URL as string + '/api/users', {
     headers: {
@@ -146,21 +197,9 @@ export async function getUser(): Promise<User> {
   if (!response.ok) {
     throw new Error('Failed to fetch user');
   }
-  const user = await response.json();
+  const user: User = await response.json();
   return user;
 }
 
-
-
-export async function getSubjects() {
-  const session = await getUser();
-
-  const now = new Date();
-  const quadri = now.getMonth() < 7 ? 1 : 0;
-
-  const subjects = SUBJECTS[Number(session.year) - 1][quadri];
-  console.log('from server action: ', subjects)
-  return subjects;
-}
 
 

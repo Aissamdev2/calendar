@@ -4,18 +4,18 @@ import { useFormStatus, useFormState } from "react-dom";
 import { addEvent } from "@/app/lib/actions";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { SUBJECT_BG_COLORS, SUBJECT_BORDER_COLORS, SUBJECTS_COLORS_1 } from "../lib/utils";
+import { SUBJECTS_BG_COLORS_OBJ, SUBJECTS_BORDER_COLORS_OBJ, SUBJECTS_COLORS_OBJ, getSubjects } from "../lib/utils";
 import { SWRProvider } from "../lib/swr-provider";
 import { mutate } from "swr";
+import clsx from "clsx";
+import { useUser } from "../lib/use-user";
+import { Subject, User } from "../lib/definitions";
+import { useSubjects } from "../lib/use-subjects";
 
-
-export default function AddEventForm({ subjects }: { subjects: string[] }) {
+export default function AddEventForm() {
 
   const addNewEvent = async (_currentState: unknown, formData: FormData) => {
-    mutate("http://localhost:3000/api/events", addEvent(formData),{
-      revalidate: false,
-      populateCache: true,
-    })
+    mutate(process.env.BASE_URL as string + "/api/events", addEvent(formData))
 
     return 'Event created'
   }
@@ -23,21 +23,26 @@ export default function AddEventForm({ subjects }: { subjects: string[] }) {
   const [state, dispatch] = useFormState(addNewEvent, undefined)
   const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
+  const { user, error, isLoading } = useUser();
+  const { subjects, error: subjectsError, isLoading: subjectsLoading } = useSubjects();
 
   useEffect(() => {
     if (state === 'Event created') {
-      console.log('Event createddd');
       router.back();
     } else if (state === 'Failed to create event') {
       console.log('Event NOT createddd');
       setErrorMessage('No se pudo crear el evento');
     }
   }, [state, setErrorMessage, router]);
+
+  if (!user || !subjects || isLoading || subjectsLoading) {
+    return null;
+  }
   
 
     return (
       <SWRProvider>
-      <form action={dispatch} className="w-fit flex flex-col h-fit py-4 px-10 bg-white z-[3] rounded-2xl">
+      <form action={dispatch} className="w-screen h-[90%] md:w-fit flex flex-col md:h-fit md:max-h-auto py-4 px-10 bg-white z-[3] rounded-2xl">
         <div className="flex justify-between pb-4 border-b border-gray-200">
           <h2 className="text-sm text-gray-900 font-medium">Anadir evento</h2>
           <button className="block cursor-pointer" type="button" onClick={() => router.back()} >
@@ -46,7 +51,7 @@ export default function AddEventForm({ subjects }: { subjects: string[] }) {
             </svg>
           </button>
         </div>
-        <div className="flex pt-6 gap-[50px]">
+        <div className="flex flex-col md:flex-row overflow-auto scrollbar-hidden  pt-6 gap-[50px]">
           <div className="flex flex-col justify-between">
             <div className="relative mb-6">
               <label className="flex  items-center mb-2 text-gray-600 text-sm font-medium">
@@ -91,7 +96,7 @@ export default function AddEventForm({ subjects }: { subjects: string[] }) {
                 Asignatura
               </label>
               <div className="flex flex-col gap-[5px]">
-                <SubjectRadios subjects={subjects} />
+                <SubjectRadios subjects={subjects}/>
               </div>
             </div>
           </div>
@@ -121,46 +126,87 @@ function AddButton() {
   )
 }
 
-function SubjectRadios({subjects}: {subjects: string[]}) {
-  const [isChecked, setIsChecked] = useState((Array(subjects.length).fill(false)))
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const {checked} = e.target
-    setIsChecked((prevState) => {
-      const newState = Array(prevState.length).fill(false)
-      newState[index] = checked
-      return newState
-    })
+function SubjectRadios({ subjects }: { subjects: Subject[] }) {
+  const emptyState = () => {
+    const subjectsName = subjects.map((subject) => subject.name)
+    const values = Array(subjects.length).fill(false)
+    const state: Record<string, boolean> = Object.fromEntries(subjectsName.map((subject, index) => [subject, values[index]]))
+    return state
   }
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
-    if (isChecked[index]) {
-      setIsChecked(Array(subjects.length).fill(false))
+  const [isChecked, setIsChecked] = useState(() => {
+    let state = emptyState()
+    state["Otros"] = true
+    return state
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, target: string) => {
+    const { checked } = e.target;
+    setIsChecked((prevState: Record<string, boolean>) => {
+      let state = emptyState()
+      state[target] = checked;
+      return state;
+    });
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>, target: string) => {
+    if (isChecked[target]) {
+      setIsChecked(() => {
+        let state = emptyState()
+        state["Otros"] = true
+        return state
+      });
     }
-  }
-  console.log(isChecked)
+  };
 
   return (
-    subjects.map((subject, index) => {
-      return (
-        <div key={subject + 'div'} className="flex items-center">
-          <input type='radio' key={subject} id={subject} className={`hidden peer`} onChange={(event) => handleChange(event, index)} value={subject} onClick={(event) => handleClick(event, index)} checked={isChecked[index]} name='subject'/>
-          <label htmlFor={subject}>
-            <div className={`max-w-[170px] ${SUBJECT_BG_COLORS[subject]} cursor-pointer flex items-center gap-2 ${SUBJECTS_COLORS_1[subject]} ${SUBJECT_BORDER_COLORS[subject]} border-[2px] text-xs font-medium mr-2 px-1.5 rounded-full py-1 }`}>
-                <p className="overflow-hidden truncate w-[">{subject}</p>
-                {
-                  isChecked[index] && (
-                    <div className="min-w-[8px]">
-                      <svg width='8' height='8' viewBox='0 0 8 8' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                        <path d='M1.52539 6.47487L6.47514 1.52512M6.47514 6.47487L1.52539 1.52512' stroke='#6B7280' strokeWidth='1.4' strokeLinecap='round' strokeLinejoin='round'></path>
-                      </svg>
-                    </div>
-                  )
-                }
+    <>
+      {subjects.map((subject, index) => {
+        return <div key={subject.id} className="flex items-center">
+          <input
+            type="radio"
+            id={subject.id}
+            className="hidden peer"
+            onChange={(event) => handleChange(event, subject.name)}
+            value={subject.id}
+            onClick={(event) => handleClick(event, subject.name)}
+            checked={isChecked[subject.name]}
+            name="subjectid"
+          />
+          <label htmlFor={subject.id}>
+            <div
+              style={{
+                backgroundColor: subject.bgcolor,
+                borderColor: subject.bordercolor,
+                color: subject.color,
+              }}
+              className={
+                `max-w-[170px] cursor-pointer flex items-center gap-2 border-[2px] text-xs font-medium mr-2 px-1.5 rounded-full py-1`}
+            >
+              <p className="overflow-hidden truncate w-[">{subject.name}</p>
+              {isChecked[subject.name] && (
+                <div className="min-w-[8px]">
+                  <svg
+                    width="8"
+                    height="8"
+                    viewBox="0 0 8 8"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M1.52539 6.47487L6.47514 1.52512M6.47514 6.47487L1.52539 1.52512"
+                      stroke="#6B7280"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                  </svg>
+                </div>
+              )}
             </div>
           </label>
         </div>
-      )
-    })
-  )
+      })}
+    </>
+  );
 }

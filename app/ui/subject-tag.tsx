@@ -1,7 +1,20 @@
-import { SUBJECT_BG_COLORS, SUBJECT_BORDER_COLORS, SUBJECTS_COLORS_1 } from "../lib/utils";
+import { SUBJECTS_BG_COLORS, SUBJECTS_BORDER_COLORS, SUBJECTS_COLORS } from "../lib/utils";
+import { SUBJECTS_PLAIN } from "../lib/subjects";
+import clsx from "clsx";
+import { Subject, User } from "../lib/definitions";
 
-export default function SubjectTag({ subject }: { subject: string }) {
-  return <div className={`${SUBJECT_BG_COLORS[subject]} cursor-pointer  ${SUBJECTS_COLORS_1[subject]} ${SUBJECT_BORDER_COLORS[subject]} border text-xs truncate  font-medium mr-2 px-1.5 rounded-full py-[2px]`}>
-      {subject}
-    </div>;
+export default function SubjectTag({ subject }: { subject: Subject | undefined }) {
+  
+  return (
+    <div 
+      style={{
+        backgroundColor: subject?.bgcolor,
+        borderColor: subject?.bordercolor,
+        color: subject?.color
+      }}
+      className={`cursor-pointer border text-xs truncate  font-medium mr-2 px-1.5 rounded-full py-[2px]`}
+      >
+        {subject?.name}
+    </div>
+  )
 }

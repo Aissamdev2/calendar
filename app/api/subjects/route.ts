@@ -7,8 +7,8 @@ export async function GET() {
     const session = verification.session
     if (!session) return new Response('Unauthorized', { status: 401 })
     const { id: userId } = session
-    const events = (await sql`SELECT * FROM events WHERE userId = ${userId};`).rows
-    return new Response(JSON.stringify(events))
+    const subjects = (await sql`SELECT * FROM subjects WHERE userId = ${userId};`).rows
+    return new Response(JSON.stringify(subjects))
 
   } catch (error) {
     console.log(error)
@@ -23,13 +23,12 @@ export async function POST(request: Request) {
     if (!session) return new Response('Unauthorized', { status: 401 })
     const body = await request.json()
     if (!body)return new Response('Invalid request body', { status: 400 })
-    const { name, date, time, description, subjectid } = body
-    if (!name || !date) return new Response('Missing required fields', { status: 400 })
-    await sql`INSERT INTO events (name, description, date, time, userId, subjectId) VALUES (${name}, ${description}, ${date}, ${time}, ${session.id}, ${subjectid});`
-    return new Response('Event created')
+    const { name, color, bgcolor, bordercolor } = body
+    if (!name) return new Response('Missing required fields', { status: 400 })
+    await sql`INSERT INTO subjects (name, color, bgColor, borderColor, userId) VALUES (${name}, ${color}, ${bgcolor}, ${bordercolor}, ${session.id})`
+    return new Response('Subject created')
   } catch (error) {
     console.log(error)
     return new Response('Unauthorized', { status: 401 })
   }
-  
 }

@@ -6,21 +6,19 @@ import { dateToString } from "../lib/utils"
 import { useRouter } from 'next/navigation'
 import SubjectTag from "./subject-tag"
 import Timer from "./timer"
-import type { RemainingTime } from "../lib/definitions"
+import type { RemainingTime, Subject } from "../lib/definitions"
 import { useFormState, useFormStatus } from "react-dom"
 import { deleteEvent } from "../lib/actions"
 import { useEvents } from "../lib/use-events"
 import ViewEventSkeleton from "./view-event-skeleton"
 import { mutate } from "swr"
+import { useUser } from "../lib/use-user"
+import { useSubjects } from "../lib/use-subjects"
 
 export default function ViewEventClient({ id }: { id: string | undefined }) {
 
   const removeEvent = async (_currentState: unknown, formData: FormData) => {
-    mutate("http://localhost:3000/api/events", deleteEvent(formData),{
-      revalidate: false,
-      populateCache: true,
-    })
-
+    mutate(process.env.BASE_URL as string + "/api/events", await deleteEvent(formData))
     return 'Event deleted'
   }
 
@@ -28,6 +26,7 @@ export default function ViewEventClient({ id }: { id: string | undefined }) {
   const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
   const { events, error, isLoading } = useEvents()
+  const { subjects, error: subjectsError, isLoading: subjectsLoading } = useSubjects();
 
   const event = events?.find((event) => event.id === id)
 
@@ -44,11 +43,9 @@ export default function ViewEventClient({ id }: { id: string | undefined }) {
 
   useEffect(() => {
     if (!event) {
-      console.log('NO EVENT');
       setRemainingTime({ days: 0, hours: 0, minutes: 0 })
     }
     else {
-      console.log('EVENT', event);
       const now = new Date()
       let eventDate = new Date(event.date)
       
@@ -68,8 +65,9 @@ export default function ViewEventClient({ id }: { id: string | undefined }) {
   
   if (isLoading) return <ViewEventSkeleton />
   if (!event) return null
+  if (!subjects) return null
   return (
-    <form action={dispatch} className="w-full h-full fixed top-[100px] left-0 z-[60] overflow-x-hidden overflow-y-auto">
+    <form action={dispatch} className="md:w-full md:h-full fixed top-[100px] left-0 z-[60] overflow-x-hidden overflow-y-auto">
       <input type="hidden" name="id" value={event.id} />
       <div className="lg:max-w-3xl lg:w-full m-3 lg:mx-auto">
         <div className="flex flex-col bg-white rounded-2xl border-[3px] py-4 px-5">
@@ -82,11 +80,11 @@ export default function ViewEventClient({ id }: { id: string | undefined }) {
             </button>
           </div>
           <div className="flex flex-col px-3 py-10 min-h-[100px] overflow-y-auto gap-[30px]">
-            <div className="flex justify-between min-h-[100px]">
-              <div className="flex flex-col max-w-[50%] gap-1">
+            <div className="flex flex-col md:flex-row justify-between min-h-[100px] gap-[30px]">
+              <div className="flex flex-col max-w-[80%] gap-1">
                 <div className="flex items-center gap-[20px]">
                   <p className=" text-black font-semibold w-fit text-nowrap"> {event.name} </p>
-                  <SubjectTag subject={event.subject ?? ''} />
+                  <SubjectTag subject={subjects?.find((subject: Subject) => subject.id === event.subjectid) } />
                 </div>
                 <div className="text-gray-600 text-sm mt-2 bg-[#f3f3f3] rounded-lg p-2">{event.description}</div>
               </div>

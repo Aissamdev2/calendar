@@ -16,9 +16,18 @@ export type Event = {
   id: string;
   name: string;
   description?: string;
-  subject?: string;
   date: string;
   time?: string;
+  userId: string;
+  subjectid: string;
+}
+
+export type Subject = {
+  id: string;
+  name: string;
+  color: string;
+  bordercolor: string;
+  bgcolor: string;
   userId: string;
 }
 
