@@ -81,7 +81,7 @@ export default function ViewEventClient({ id }: { id: string | undefined }) {
           </div>
           <div className="flex flex-col px-3 py-10 min-h-[100px] overflow-y-auto gap-[30px]">
             <div className="flex flex-col md:flex-row justify-between min-h-[100px] gap-[30px]">
-              <div className="flex flex-col max-w-[80%] gap-1">
+              <div className="flex flex-col max-w-[100%] gap-1">
                 <div className="flex items-center gap-[20px]">
                   <p className=" text-black font-semibold w-fit text-nowrap"> {event.name} </p>
                   <SubjectTag subject={subjects?.find((subject: Subject) => subject.id === event.subjectid) } />
