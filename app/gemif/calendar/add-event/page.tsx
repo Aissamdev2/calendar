@@ -8,7 +8,7 @@ export default async function Page() {
 
   return (
     <Modal>
-      <AddEventForm subjects={subjects}/>
+      <AddEventForm/>
     </Modal>
   )
 }
