@@ -1,7 +1,7 @@
-import Calendar from "@/app/ui/calendar";
+import Calendar from "@/app/ui/calendar3";
 
 export default function CalendarPage() {
   return (
-      <Calendar />
+    <Calendar />
   )
 }

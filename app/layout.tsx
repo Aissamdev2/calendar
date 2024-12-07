@@ -21,7 +21,7 @@ export default function RootLayout({
       <head>
         <meta name="google-site-verification" content="vRq6go1xrzjxByoh4eWmCoJJCefv6bCzcCfTFN8GSdo" />
       </head>
-      <body className={inter.className + " flex flex-col h-screen"}>{children}</body>
+      <body className={inter.className + ' h-screen'}>{children}</body>
     </html>
   );
 }

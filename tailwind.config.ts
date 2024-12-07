@@ -1,6 +1,8 @@
 import type { Config } from "tailwindcss";
 //import { SUBJECTS_COLORS_1, SUBJECT_BG_COLORS, SUBJECT_BORDER_COLORS } from "./app/lib/utils";
-const plugin = require("tailwindcss/plugin")
+import plugin from "tailwindcss/plugin";
+
+/** @type {import('tailwindcss/types/config').PluginCreator} */
 
 const config: Config = {
   mode: "jit",
@@ -31,18 +33,18 @@ const config: Config = {
     },
   },
   plugins: [
-    plugin(({ addUtilities }: { addUtilities: any }) => {
+    plugin(({ addUtilities, addVariant }: { addUtilities: any, addVariant: any }) => {
     addUtilities({
       /* Chrome, Safari and Opera */
       ".scrollbar-hidden::-webkit-scrollbar": {
         display: "none",
       },
-
       ".scrollbar-hidden": {
         "scrollbar-width": "none" /* Firefox */,
         "-ms-overflow-style": "none" /* IE and Edge */,
       },
     })
+    addVariant("starting", "@starting-style");
   }),],
 };
 export default config;

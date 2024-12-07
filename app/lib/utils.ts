@@ -172,6 +172,51 @@ export const SUBJECTS_BG_COLORS_42: Record<string, string> = {
 };
 
 
+const SUBJECTS_OBJ = [
+  // Year 1, Quadri 1
+  { name: 'Álgebra Lineal', color: '#ff0000', bgcolor: '#fef2f2', bordercolor: '#f87171', year: '1', quadri: '1' },
+  { name: 'Análisis Matemático I', color: '#4f46e5', bgcolor: '#eef2ff', bordercolor: '#818cf8', year: '1', quadri: '1' },
+  { name: 'Física I', color: '#059669', bgcolor: '#ecfdf5', bordercolor: '#34d399', year: '1', quadri: '1' },
+  { name: 'Programación Científica', color: '#374151', bgcolor: '#f3f4f6', bordercolor: '#9ca3af', year: '1', quadri: '1' },
+  // Year 1, Quadri 2
+  { name: 'Análisis Matemático II', color: '#4f46e5', bgcolor: '#eef2ff', bordercolor: '#818cf8', year: '1', quadri: '2' },
+  { name: 'Ecuaciones Diferenciales I', color: '#d946ef', bgcolor: '#fdf4ff', bordercolor: '#e879f9', year: '1', quadri: '2' },
+  { name: 'Física II', color: '#059669', bgcolor: '#ecfdf5', bordercolor: '#34d399', year: '1', quadri: '2' },
+  { name: 'Geometría', color: '#ff0000', bgcolor: '#fef2f2', bordercolor: '#f87171', year: '1', quadri: '2' },
+  // Year 2, Quadri 1
+  { name: 'Combinatoria y Probabilidad', color: '#1d2ba8', bgcolor: '#cacffc', bordercolor: '#1525ad', year: '2', quadri: '1' },
+  { name: 'Computación algebraica', color: '#05850e', bgcolor: '#ccffcf', bordercolor: '#34c73e', year: '2', quadri: '1' },
+  { name: 'Ecuaciones Diferenciales II', color: '#961299', bgcolor: '#fbc7fc', bordercolor: '#c131c4', year: '2', quadri: '1' },
+  { name: 'Electromagnetismo', color: '#7d7a04', bgcolor: '#fcfcc7', bordercolor: '#d6d32f', year: '2', quadri: '1' },
+  { name: 'Mecánica Clásica', color: '#910f2d', bgcolor: '#fccad6', bordercolor: '#c72c50', year: '2', quadri: '1' },
+  // Year 2, Quadri 2
+  { name: 'Estadística', color: '#1d2ba8', bgcolor: '#cacffc', bordercolor: '#1525ad', year: '2', quadri: '2' },
+  { name: 'Física Cuántica', color: '#05850e', bgcolor: '#ccffcf', bordercolor: '#34c73e', year: '2', quadri: '2' },
+  { name: 'Métodos Numéricos', color: '#961299', bgcolor: '#fbc7fc', bordercolor: '#c131c4', year: '2', quadri: '2' },
+  { name: 'Teoría de Grafos', color: '#7d7a04', bgcolor: '#fcfcc7', bordercolor: '#d6d32f', year: '2', quadri: '2' },
+  { name: 'Termodinámica', color: '#910f2d', bgcolor: '#fccad6', bordercolor: '#c72c50', year: '2', quadri: '2' },
+  // Year 3, Quadri 1
+  { name: 'Análisis Complejo', color: '#05850e', bgcolor: '#ccffcf', bordercolor: '#34c73e', year: '3', quadri: '1' },
+  { name: 'Biofísica', color: '#910f2d', bgcolor: '#fccad6', bordercolor: '#c72c50', year: '3', quadri: '1' },
+  { name: 'Física de Fluidos', color: '#7d7a04', bgcolor: '#fcfcc7', bordercolor: '#d6d32f', year: '3', quadri: '1' },
+  { name: 'Física del Estado Sólido y Superfícies', color: '#961299', bgcolor: '#fbc7fc', bordercolor: '#c131c4', year: '3', quadri: '1' },
+  { name: 'Mecánica Estatística', color: '#1d2ba8', bgcolor: '#cacffc', bordercolor: '#1525ad', year: '3', quadri: '1' },
+  // Year 3, Quadri 2
+  { name: 'Electrónica Física', color: '#05850e', bgcolor: '#ccffcf', bordercolor: '#34c73e', year: '3', quadri: '2' },
+  { name: 'Estructuras Algebraicas', color: '#7d7a04', bgcolor: '#fcfcc7', bordercolor: '#d6d32f', year: '3', quadri: '2' },
+  { name: 'Geometría Diferencial', color: '#1d2ba8', bgcolor: '#cacffc', bordercolor: '#1525ad', year: '3', quadri: '2' },
+  { name: 'Sistemas Dinámicos', color: '#961299', bgcolor: '#fbc7fc', bordercolor: '#c131c4', year: '3', quadri: '2' },
+  // Year 4, Quadri 1
+  { name: 'Electrónica Aplicada', color: '#05850e', bgcolor: '#ccffcf', bordercolor: '#34c73e', year: '4', quadri: '1' },
+  { name: 'Óptica y Fotónica', color: '#7d7a04', bgcolor: '#fcfcc7', bordercolor: '#d6d32f', year: '4', quadri: '1' },
+  { name: 'Proyectos de Ingeniería', color: '#1d2ba8', bgcolor: '#cacffc', bordercolor: '#1525ad', year: '4', quadri: '1' },
+  // Year 4, Quadri 2
+  { name: 'Trabajo de Fin de Grado', color: '#05850e', bgcolor: '#ccffcf', bordercolor: '#34c73e', year: '4', quadri: '2' },
+];
+
+
+
+
 export const SUBJECTS_COLORS_OBJ: Record<string, string> = {
   "Otros": "#000000",
   ...SUBJECTS_COLORS_11,

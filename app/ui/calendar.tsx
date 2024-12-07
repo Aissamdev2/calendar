@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import CalendarSkeleton from "@/app/ui/calendar-skeleton";
 import CalendarClient from "./calendar-client";
 
+
 export default async function Calendar() {
 
   return (

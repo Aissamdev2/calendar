@@ -1,10 +1,10 @@
-import Header from "@/app/ui/header";
+import Header from "@/app/ui/header2";
 
 export default function GemifLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <main className="flex justify-center items-end h-[90%] w-screen bg-[#eaf3ff]">
+      <main className="h-screen absolute top-0 left-0 w-screen bg-[#eaf3ff]">
         {children}
       </main>
     </>

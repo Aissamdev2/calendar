@@ -51,13 +51,13 @@ export default function CalendarClient() {
                   )
                 }
               </div>
-              <div className={`flex-grow-[1] h-full overflow-auto scrollbar-hidden p-2 self-center flex flex-col gap-y-[1px] gap-x-1 top-0 left-0`}>
+              <div className="flex-grow h-full overflow-hidden p-[2px] flex flex-col">
               {
                 eventsInDate?.length > 0 && eventsInDate?.map((event, index) =>  {
                   const subject = subjects.find((subject) => subject.id === event.subjectid)
                   return <Link key={event.id} href={`/gemif/calendar/view-event/${event.id}`}
                   style={{ backgroundColor: subject?.bgcolor, borderColor: subject?.bordercolor, color: subject?.color }}
-                  className={ `min-h-[16.6px] font-bold m-0 h-fit hover:cursor-pointer text-[10px] py-[0px] px-[4px] truncate rounded border-[1px]`}>{event.name}</Link>
+                  className={`h-[16.6px] w-full max-w-full font-bold truncate py-[0px] px-[4px] rounded border-[1px] text-[10px] hover:cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap`}>{event.name}</Link>
                 })
               }
               </div>

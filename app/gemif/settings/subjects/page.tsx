@@ -9,6 +9,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { updateSubjects } from "@/app/lib/actions";
 import { mutate } from "swr";
 import { useRouter } from "next/navigation";
+import { Subject } from "@/app/lib/definitions";
 
 
 export default function Page() {
@@ -28,6 +29,23 @@ export default function Page() {
 
   const [reset, setReset] = useState(false)
   const [state, dispatch] = useFormState(changeSubjects, undefined)
+  const [selectedOption, setSelectedOption] = useState('Seleccione una asignatura');
+  const [previewSubject, setPreviewSubject] = useState<Subject | undefined>(undefined)
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOption(event.target.value)
+    setPreviewSubject(subjects?.find((subject) => subject.name === event.target.value))
+  }
+
+  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPreviewSubject((prevState) => {
+      if (!prevState) return prevState
+      return {
+        ...prevState,
+        [event.target.name]: event.target.value
+      }
+    })
+  }
 
   useEffect(() => {
     if (state === 'Subjects updated') {
@@ -77,12 +95,12 @@ export default function Page() {
     dispatch(formData);
   }
 
-  console.log(subjectState)
+  console.log(selectedOption)
   if (!subjects || isLoading) return null
 
   return (
     <div className="h-full w-full flex bg-[#dae8fd] text-gray-900 font-medium justify-center items-center">
-      <div className="w-[95%] h-[90%] bg-[#e8f0fd] rounded-[30px] border border-[#a19aff6b] flex justify-between px-10 py-10">
+      <div className="w-[95%] h-[90%] bg-[#e8f0fd] rounded-[30px] border border-[#a19aff6b] flex justify-between px-[60px] py-10">
         <form action={dispatch} onSubmit={onSubmitForm} className="flex flex-col gap-3 max-w-[40%]">
           <p className="text-sm border-b px-2 py-2 border-[#5f3fbe61]">Asignaturas cursando actualmente</p>
           <div className="flex gap-6">
@@ -144,7 +162,51 @@ export default function Page() {
           </div>
         </form>
         <div className="flex flex-col gap-3">
-          <p className="text-sm border-b px-2 py-2 border-[#5f3fbe61]">Otros</p>
+          <p className="text-sm border-b px-2 py-2 border-[#5f3fbe61]">Colores de asignatura</p>
+          <div className="flex items-center gap-[50px]">
+            <div className="flex flex-col gap-8 justify-evenly">
+              <div className="flex flex-col">
+                <label htmlFor="countries" className=" mb-2 text-sm font-medium text-gray-600 w-full">Asignatura</label>
+                <select 
+                id="options"
+                name="options"
+                value={selectedOption}
+                onChange={handleSelectChange}
+                className="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-full py-1 px-2 focus:outline-none">
+                  <option value="Seleccione una asignatura">Seleccione una asignatura</option>
+                  {
+                    subjects.map((subject) => {
+                      if (subject.name === 'Otros') return null
+                      return (
+                        <option key={subject.id + 'color'} value={subject.name}>{subject.name}</option>
+                      )
+                    })
+                  }
+                </select>
+              </div>
+              <SubjectTag subject={previewSubject} />
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className='flex flex-col '>
+                <label htmlFor="hs-color-input" className="text-sm font-medium mb-2 text-nowrap dark:text-white">Color de texto</label>
+                <input onChange={handleColorChange} disabled={selectedOption === 'Seleccione una asignatura'} type="color" name="color" className="p-1 h-10 w-14 bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700" id="color" defaultValue={subjects?.find((subject) => subject.name === selectedOption)?.color}></input>
+              </div>
+              <div className='flex flex-col '>
+                <label htmlFor="hs-color-input" className="text-sm font-medium mb-2 dark:text-white">Color de fondo</label>
+                <input onChange={handleColorChange} disabled={selectedOption === 'Seleccione una asignatura'} type="color" name="bgcolor" className="p-1 h-10 w-14 bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700" id="bgcolor" defaultValue={subjects?.find((subject) => subject.name === selectedOption)?.bgcolor} ></input>
+              </div>
+              <div className='flex flex-col '>
+                <label htmlFor="hs-color-input" className="text-sm font-medium mb-2 dark:text-white">Color de borde</label>
+                <input onChange={handleColorChange} disabled={selectedOption === 'Seleccione una asignatura'} type="color" name="bordercolor" className="p-1 h-10 w-14 bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700" id="bordercolor" defaultValue={subjects?.find((subject) => subject.name === selectedOption)?.bordercolor}></input>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-3 justify-center">
+            <button type="button" onClick={() => setReset(!reset)} className="py-2.5 px-5 text-xs bg-red-500 text-white rounded-full cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 hover:bg-red-700">
+              Reestablecer
+            </button>
+            <UpdateButton />
+          </div>
         </div>
       </div>
     </div>

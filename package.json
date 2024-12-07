@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@types/bcrypt": "^5.0.2",
     "@types/dotenv": "^8.2.0",
     "@types/jsonwebtoken": "^9.0.6",
@@ -24,12 +25,14 @@
     "react-dom": "^18",
     "react-router-dom": "^6.26.0",
     "swr": "^2.2.5",
-    "tsx": "^4.16.5"
+    "tsx": "^4.16.5",
+    "tw-elements": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "daisyui": "^4.12.14",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
