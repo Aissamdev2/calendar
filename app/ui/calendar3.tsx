@@ -15,36 +15,31 @@ export default function Calendar() {
   const { year, month } = useContext(DateContext);
   const { events } = useEvents();
   const { subjects } = useSubjects();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-
-  const eventsInDate = selectedDate
-    ? events?.filter((event) => compareDates(new Date(event.date), selectedDate))
-    : [];
 
   return (
     <DateProvider>
-      <section className="flex flex-col h-full w-full bg-stone-50">
+      <section className="flex flex-col h-full w-full bg-gradient-to-r from-[#f3f3fc]  to-[#AFACF8]">
         {/* Background decorations */}
-        <div className="absolute top-0 left-0 w-screen h-screen">
-          <div className="bg-sky-400 w-full sm:w-40 h-40 rounded-full opacity-30 max-sm:ml-auto sm:ml-56"></div>
-          <div className="bg-emerald-500 w-full sm:w-40 h-24 opacity-30"></div>
-          <div className="bg-purple-600 w-full sm:w-40 h-24 opacity-30"></div>
-          <div className="absolute  inset-0 backdrop-blur-3xl"></div>
+        <div className="fixed top-0 left-0 w-screen h-screen">
+          <div className="bg-[#8a88b8] w-full sm:w-40 h-40 rounded-full opacity-45 max-sm:ml-auto sm:ml-56"></div>
+          <div className="bg-emerald-500 w-full sm:w-40 h-24 md:mt-0 mt-20 opacity-25"></div>
+          <div className="bg-purple-600 w-full sm:w-40 h-24 md:mt-0 mt-10 opacity-45"></div>
+          <div className="absolute inset-0  backdrop-blur-3xl"></div>
         </div>
 
         {/* Main content area */}
-        <div className="grow z-50 shrink max-h-full flex flex-col lg:max-h-screen w-full max-w-7xl mx-auto px-2 lg:px-8">
-            <div className="flex flex-col gap-12 mt-[70px] mb-[20px] lg:gap-0 pt-8 h-full lg:pt-0 lg:flex-row">
+        <div className="grow z-50 max-h-full flex flex-col lg:mb-0 mb-8 lg:max-h-screen w-full max-w-7xl mx-auto px-2 lg:px-2">
+            <div className="flex flex-col gap-24 mt-[80px] mb-[20px] lg:gap-12 pt-8 h-full lg:pt-0 lg:flex-row">
               {/* Upcoming Events */}
-              <Dashboard eventsInDate={eventsInDate} subjects={subjects} />
+              <Dashboard events={events} subjects={subjects} />
 
               {/* Calendar */}
-              <div className="flex h-full flex-col px-2.5 grow-[3] bg-gradient-to-b from-white/25 to-white xl:bg-white rounded-2xl">
+              <div className="flex min-h-[550px] lg:min-h-auto lg:basis-[60%] h-full flex-col px-2.5 py-2 grow-[3] bg-gradient-to-b from-white/25 to-white rounded-2xl">
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-5">
                   <CalendarHeader />
                   <AddEventButton />
                 </div>
-                <div className="border flex lg:mb-0 mb-8 flex-col grow border-indigo-200 rounded-xl">
+                <div className="border flex flex-col grow border-indigo-200 rounded-xl">
                   <div className="grid grid-cols-7 rounded-t-3xl border-b border-indigo-200">
                     {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map((day) => (
                       <div
@@ -58,8 +53,6 @@ export default function Calendar() {
                   <CalendarClient
                     subjects={subjects}
                     events={events}
-                    selectedDate={selectedDate}
-                    setSelectedDate={setSelectedDate}
                   />
                 </div>
               </div>

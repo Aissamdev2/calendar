@@ -42,38 +42,57 @@ export default function AddEventForm() {
 
     return (
       <SWRProvider>                                              
-              <div id="modalBox-3"
-                className="starting:scale-[0] scale-[1] transition-[transform] duration-300 w-full h-full fixed top-0 left-0 z-[100000] overflow-x-hidden overflow-y-auto">
-                <div
-                  className="opacity-1 ease-out sm:max-w-sm sm:w-full m-5 relative top-1/2 -translate-y-1/2 sm:mx-auto modal-open:opacity-100 transition-all modal-open:duration-500">
-                  <div className="bg-white p-6">
-                    <div className="flex flex-col gap-5">
-                      <h4 className="text-lg font-bold leading-8 text-gray-900 text-center">Añadir nuevo evento</h4>
-                      <form action="#" className="flex flex-col gap-4">
-                        <div className="relative">
-                          <label className="flex  items-center mb-1 text-gray-600 text-xs font-medium">Título</label>
-                          <input type="text" id="default-search" name="name"
-                            className="block w-full  pl-4 pr-3.5 py-2.5 text-sm font-normal shadow-xs text-gray-900 bg-transparent border border-gray-200 rounded-lg placeholder-gray-400 focus:outline-none leading-relaxed"
-                            placeholder="Añade un titulo" required />
-                        </div>
-
-                        <div className="relative">
-                          <label className="flex  items-center mb-1 text-gray-600 text-xs font-medium">Descripción </label>
-                          <textarea id="problem-1" name="description"
-                            className="block w-full  h-24 px-3.5 py-2 text-sm font-normal shadow-xs text-gray-900 bg-transparent border border-gray-200 rounded-lg placeholder-gray-400 focus:outline-none leading-relaxed resize-none"
-                            placeholder="Escribe una descripción..."></textarea>
-                        </div>
-                      </form>
-                      <div className="flex items-center justify-end gap-4">
-                        <button onClick={() => router.back()} type="button" className="w-full text-center p-1.5 py-2 rounded-md bg-white text-black text-xs font-medium transition-all duration-300 border hover:border-gray-400"  data-pd-overlay="#modalBox-3" data-modal-target="modalBox-3">Cancel</button>
-                        <AddButton />
-                      </div>
+        <form action={dispatch} id="modalBox-3"
+          className="starting:scale-[0] scale-[1] transition-[transform] duration-300 w-full h-full max-h-screen fixed top-0 left-0 z-[1000] overflow-x-hidden overflow-y-auto">
+          <div
+            className=" w-fit max-h-[80%] md:h-auto relative top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
+            <div className="bg-white p-6">
+              <div className="flex flex-col gap-5">
+                <h4 className="text-lg font-bold leading-8 text-gray-900 text-center">Añadir nuevo evento</h4>
+                <div className="flex flex-col gap-8 overflow-auto scrollbar-hidden py-5 md:flex-row">
+                  <div className="flex flex-col gap-4">
+                    <div className="relative">
+                      <label className="flex  items-center mb-1 text-gray-600 text-xs font-medium">Título</label>
+                      <input type="text" name="name"
+                        className="block w-full  pl-4 pr-3.5 py-2.5 text-sm font-normal shadow-xs text-gray-900 bg-transparent border border-gray-200 rounded-lg placeholder-gray-400 focus:outline-none leading-relaxed"
+                        placeholder="Añade un titulo" required />
+                    </div>
+                    <div className="relative">
+                      <label className="flex  items-center mb-1 text-gray-600 text-xs font-medium">Descripción </label>
+                      <textarea  name="description"
+                        className="block w-full  h-24 px-3.5 py-2 text-sm font-normal shadow-xs text-gray-900 bg-transparent border border-gray-200 rounded-lg placeholder-gray-400 focus:outline-none leading-relaxed resize-none"
+                        placeholder="Escribe una descripción..."></textarea>
                     </div>
                   </div>
+                  <div className="flex flex-col gap-4">
+                    <div className="relative">
+                      <label className="flex  items-center mb-1 text-gray-600 text-xs font-medium">Fecha del evento</label>
+                      <input type="date" name="date"
+                        defaultValue={new Date().toISOString().split('T')[0]}
+                        className="block w-full  pl-4 pr-3.5 py-2.5 text-sm font-normal shadow-xs text-gray-900 bg-transparent border border-gray-200 rounded-lg placeholder-gray-400 focus:outline-none leading-relaxed"
+                        placeholder="Añade un titulo" required />
+                    </div>
+                    <div className="relative">
+                      <label className="flex  items-center mb-1 text-gray-600 text-xs font-medium">Hora del evento</label>
+                      <input type="time" name="time"
+                        defaultValue={new Date().toLocaleTimeString().slice(0, 5)}
+                        className="block w-full  pl-4 pr-3.5 py-2.5 text-sm font-normal shadow-xs text-gray-900 bg-transparent border border-gray-200 rounded-lg placeholder-gray-400 focus:outline-none leading-relaxed"
+                        placeholder="Añade un titulo" required />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-[5px]">
+                    <SubjectRadios subjects={subjects}/>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-end gap-4">
+                  <button onClick={() => router.back()} type="button" className="w-full text-center p-1.5 py-2 rounded-md bg-white text-black text-xs font-medium transition-all duration-300 border hover:border-gray-400"  data-pd-overlay="#modalBox-3" data-modal-target="modalBox-3">Cancel</button>
+                  <AddButton />
                 </div>
               </div>
-              <div id="backdrop" className="fixed top-0 left-0 w-full h-full bg-black/50 z-[50]">
-              </div>
+            </div>
+          </div>
+        </form>
       </SWRProvider>
     )
 }
@@ -149,7 +168,7 @@ function SubjectRadios({ subjects }: { subjects: Subject[] }) {
                 color: subject.color,
               }}
               className={
-                `max-w-[170px] cursor-pointer flex items-center gap-2 border-[2px] text-xs font-medium mr-2 px-1.5 rounded-full py-1`}
+                `max-w-[170px] cursor-pointer flex items-center gap-2 border-[2px] text-xs font-medium mr-2 px-1.5 py-1`}
             >
               <p className="overflow-hidden truncate w-[">{subject.name}</p>
               {isChecked[subject.name] && (
