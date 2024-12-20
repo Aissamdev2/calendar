@@ -4,6 +4,7 @@ import { DateContext } from "../lib/date-context";
 import { Subject, Event } from "../lib/definitions";
 import SubjectTag from "./subject-tag2";
 import CalendarClientSkeleton from "./calendar-client-skeleton";
+import Link from "next/link";
 
 export default function CalendarClient({
   subjects,
@@ -54,17 +55,19 @@ export default function CalendarClient({
                     (subject) => subject.id === event.subjectid
                   );
                   return (
-                    <div
+                    <Link
+                      href={`/gemif/calendar/view-event/${event.id}`}
                       key={event.id}
                       style={{
-                        backgroundColor: subject?.bgcolor,
+                        background: `linear-gradient(to right, ${subject?.bgcolor}, white)`,
                         borderColor: subject?.bordercolor,
-                        color: subject?.color
+                        color: subject?.color,
+                        borderRadius: "4px"
                       }}
                       className={`cursor-pointer border grow text-[8px] min-h-[14px] truncate font-medium px-1.5 py-0`}
                       >
                         {event.name}
-                    </div>
+                    </Link>
                   );
                 })}
             </div>

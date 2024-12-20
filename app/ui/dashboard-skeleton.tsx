@@ -2,7 +2,7 @@
 export default function DashboardSkeleton() {
 
   return (
-    <div className="flex flex-col gap-5 grow lg:mr-7">
+    <div className="flex flex-col gap-5 grow">
       <h2 className="text-3xl font-extrabold tracking-tight text-black leading-tight md:text-3xl">
         Próximos
         <span className=" bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">

@@ -1,3 +1,5 @@
+/*
+
 'use client'
 
 import CalendarEvents from "./calendar-events";
@@ -66,3 +68,4 @@ export default function Calendar() {
       </DateProvider>
   );
 }
+*/

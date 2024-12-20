@@ -16,16 +16,16 @@ export default function Dashboard({events, subjects}:{ events: Event[] | undefin
   })
 
   return (
-    <div className="flex flex-col gap-15 grow ">
+    <div className="flex flex-col gap-5 grow ">
         <h2 className="text-3xl font-extrabold tracking-tight text-black leading-tight md:text-3xl">
           Próximos
           <span className=" bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">
-             {" Eventos"}
+            {" Eventos"}
           </span>
         </h2>
         {
           nearEvents.length !== 0 ?
-          <div className="flex gap-5 flex-col overflow-auto p-4 bg-gradient-to-b from-white/25 to-[#f6f1ff] rounded-md scrollbar-hidden max-h-[450px]">
+          <div className="flex gap-5 flex-col overflow-auto p-0 scrollbar-hidden max-h-[450px]">
           {
             nearEvents.map((event, index) => {
               const subject = subjects?.find((subject) => subject.id === event.subjectid)
